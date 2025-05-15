@@ -11,6 +11,20 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    // In User.php model
+
+    // Students under a teacher
+    public function students()
+    {
+        return $this->hasMany(User::class, 'teacher_id')->where('role', 'student');
+    }
+
+    // Teacher of a student
+    public function teacher()
+    {
+        return $this->belongsTo(User::class, 'teacher_id')->where('role', 'teacher');
+    }
+
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +35,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'employeeID',
+        'studentID',
+        'yearLevel',
+        'program',
+        'teacher_id',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.

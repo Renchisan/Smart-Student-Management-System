@@ -16,9 +16,22 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->enum('role', ['teacher', 'student'])->default('student');
+            $table->string('employeeID')->nullable(); // only for teachers
+            $table->string('studentID')->nullable();  // only for students
+            $table->integer('yearLevel')->nullable(); // only for students
+            $table->string('program')->nullable();    // only for students
+            $table->unsignedBigInteger('teacher_id')->nullable(); // references the teacher
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('teacher_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('set null');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

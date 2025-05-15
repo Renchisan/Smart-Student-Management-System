@@ -5,9 +5,12 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+const page = usePage();
+const userRole = page.props.auth.user.role; // assuming this is where the role is stored
+console.log('User role:', userRole);
 </script>
 
 <template>
@@ -38,6 +41,13 @@ const showingNavigationDropdown = ref(false);
                                     :active="route().current('dashboard')"
                                 >
                                     Dashboard
+                                </NavLink>
+                                 <NavLink
+                                    v-if="userRole === 'teacher'"
+                                    :href="'#student-list'"
+                                    :active="false"
+                                    >
+                                    Students
                                 </NavLink>
                             </div>
                         </div>
@@ -141,11 +151,13 @@ const showingNavigationDropdown = ref(false);
                 >
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                        :href="'#dashboard'"
+                        :active="false"
                         >
-                            Dashboard
+                        Dashboard
                         </ResponsiveNavLink>
+
+ 
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -180,6 +192,7 @@ const showingNavigationDropdown = ref(false);
             </nav>
 
             <!-- Page Heading -->
+            <!-- <NavLink :role="userRole" /> -->
             <header
                 class="bg-white shadow dark:bg-gray-800"
                 v-if="$slots.header"

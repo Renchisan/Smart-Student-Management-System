@@ -32,12 +32,19 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head title="Log in" />
-
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
         </div>
 
         <form @submit.prevent="submit">
+            <div class="flex flex-col items-center justify-center mt-8">
+                <img
+                src="https://upload.wikimedia.org/wikipedia/commons/9/9d/1Seal.png"
+                alt="Logo"
+                class="w-72  object-contain mb-4 "
+                />   
+            </div>
+
             <div>
                 <InputLabel for="email" value="Email" />
 
@@ -54,7 +61,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <InputLabel for="password" value="Password" />
 
                 <TextInput
@@ -69,16 +76,35 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4 block">
+            <PrimaryButton
+                    class="bg-green-900 hover:bg-green-800"
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                >
+                    Log in
+            </PrimaryButton>
+
+            <div class="mt-4 mb-4 block flex flex-row justify-between">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ms-2 text-sm text-gray-600 dark:text-gray-400"
                         >Remember me</span
                     >
                 </label>
+                <label class="flex items-center">
+                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400"
+                        >Forgot password?</span
+                    >
+                </label>
+        
             </div>
-
-            <div class="mt-4 flex items-center justify-end">
+            <hr>
+            <div class="mt-4 mb-4">
+                <h1 class="text-green-900 text-lg"><b>Is this your first time here?</b></h1>
+                <p class="text-sm"> For <b>Students</b>, use Student Portal credentials (Student number and Password).
+                <br>For <b>Faculty</b>, use credentials provided by the IT Department.<br>Design by ITC.</p> 
+            </div>
+            <!-- <div class="mt-4 flex items-center justify-end">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
@@ -87,14 +113,8 @@ const submit = () => {
                     Forgot your password?
                 </Link>
 
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Log in
-                </PrimaryButton>
-            </div>
+
+            </div> -->
         </form>
     </GuestLayout>
 </template>
