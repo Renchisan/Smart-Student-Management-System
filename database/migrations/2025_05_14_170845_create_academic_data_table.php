@@ -11,17 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('academic_data', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->unsignedBigInteger('student_id'); // FK to users
-        //     $table->string('subject');
-        //     $table->float('grade')->nullable();
-        //     $table->integer('attendance')->nullable();
-        //     $table->integer('participation')->nullable();
-        //     $table->timestamps();
 
-        //     $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
-        // });
 
         Schema::create('academic_data', function (Blueprint $table) {
             $table->id();
@@ -38,7 +28,6 @@ return new class extends Migration
 
             $table->float('G1')->nullable();                    // 1st period grade
             $table->float('G2')->nullable();                    // 2nd period grade
-            $table->float('G3')->nullable();                    // final grade (actual outcome)
 
             $table->float('g1_g2_diff')->nullable();
             $table->float('g_avg')->nullable();

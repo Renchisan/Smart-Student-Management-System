@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\TeacherDashboardController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -13,6 +15,8 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
+
+Route::get('/predict-risk', [PredictionController::class, 'predictRisk']);
 
 Route::get('/', function () {
     return Inertia::render('Auth/Login', [
@@ -32,9 +36,12 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Teacher Dashboard
-Route::get('/teacher/dashboard', function () {
-    return Inertia::render('TeacherDashboard');
-})->middleware(['auth', 'verified'])->name('teacher.dashboard');
+// Route::get('/teacher/dashboard', function () {
+//     return Inertia::render('TeacherDashboard');
+// })->middleware(['auth', 'verified'])->name('teacher.dashboard');
+Route::get('/teacher/dashboard', [TeacherDashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('teacher.dashboard');
 
 // Student Dashboard
 Route::get('/student/dashboard', function () {

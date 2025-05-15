@@ -27,9 +27,8 @@ class AcademicDataSeeder extends Seeder
                 'absences' => rand(0, 30),
                 'G1' => $G1,
                 'G2' => $G2,
-                'G3' => $G3,
-                'g1_g2_diff' => $G2 - $G1,
-                'g_avg' => ($G1 + $G2) / 2,
+                'G1_G2_diff' => $G2 - $G1,
+                'G_avg' => ($G1 + $G2) / 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

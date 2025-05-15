@@ -42,13 +42,13 @@ console.log('User role:', userRole);
                                 >
                                     Dashboard
                                 </NavLink>
-                                 <NavLink
+                                 <!-- <NavLink
                                     v-if="userRole === 'teacher'"
                                     :href="'#student-list'"
                                     :active="false"
                                     >
                                     Students
-                                </NavLink>
+                                </NavLink> -->
                             </div>
                         </div>
 

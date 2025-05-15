@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('performances', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id'); // FK to users
-            $table->boolean('risk')->default(false);
+            $table->string('risk')->nullable(); 
             $table->date('prediction_date')->nullable();
             $table->timestamps();
 
