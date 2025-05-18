@@ -27,7 +27,21 @@ const avgStats = page.props.chartData;
 const lowestAbsences = page.props.lowestAbsences;
 const highestAbsences = page.props.highestAbsences;
 const students = page.props.students;
-// const suggestion = page.props.data;
+const rowsPerPageOptions = [5, 10, 25];
+const rowsPerPage = ref(5);
+const currentPage = ref(1);
+const sortKey = ref("name");
+const sortAsc = ref(true);
+const selectedStudents = ref(new Set());
+const selectedProgram = ref("");
+
+const filteredStudents = computed(() => {
+    if (!selectedProgram.value) {
+        return students; // return all if no filter
+    }
+    return students.filter(student => student.program === selectedProgram.value);
+});
+
 
 const chartData = {
     labels: avgStats.map((item) => item.label),
@@ -68,13 +82,6 @@ function toggleAbsences() {
     showLowest.value = !showLowest.value;
 }
 
-const rowsPerPageOptions = [5, 10, 25];
-const rowsPerPage = ref(5);
-const currentPage = ref(1);
-const sortKey = ref("name");
-const sortAsc = ref(true);
-const selectedStudents = ref(new Set());
-
 const toggleSort = (key) => {
     if (sortKey.value === key) {
         sortAsc.value = !sortAsc.value;
@@ -87,8 +94,8 @@ const toggleSort = (key) => {
 const sortOptions = [
     { label: "Name A-Z", key: "name", order: "asc" },
     { label: "Name Z-A", key: "name", order: "desc" },
-    { label: "Grade Asc", key: "g_avg", order: "asc" },
-    { label: "Grade Desc", key: "g_avg", order: "desc" },
+    { label: "Grade Asc", key: "g_avg", order: "asc", isConverted: true  },
+    { label: "Grade Desc", key: "g_avg", order: "desc",isConverted: true  },
     { label: "Attendance % Asc", key: "attendancePercent", order: "asc" },
     { label: "Attendance % Desc", key: "attendancePercent", order: "desc" },
     { label: "Participation % Asc", key: "participationPercent", order: "asc" },
@@ -102,17 +109,15 @@ const sortOptions = [
 ];
 const selectedSort = ref(sortOptions[0]);
 const sortedStudents = computed(() => {
-    return [...students].sort((a, b) => {
+    return [...filteredStudents.value].sort((a, b) => {
         let valA, valB;
 
         if (selectedSort.value.key === "attendancePercent") {
             valA = Math.max(0, ((90 - a.absences) / 90) * 100);
             valB = Math.max(0, ((90 - b.absences) / 90) * 100);
-            console.log(a.absences, "aaada");
-        } else if (selectedSort.value.key === "g_avg") {
-            valA = parseFloat(convertGradeInverted(a.g_ave));
-            valB = parseFloat(convertGradeInverted(b.g_ave));
-            console.log(valA, a.g_ave, "aaa", valB, b.g_ave);
+        } else if (selectedSort.value.isConverted && selectedSort.value.key === "g_avg") {
+            valA = parseFloat(convertGrade(a.g_avg));
+            valB = parseFloat(convertGrade(b.g_avg));
         } else if (selectedSort.value.key === "participationPercent") {
             const participation = (s) =>
                 ((s.schoolsup + s.famsup + s.paid + s.activities) / 4) * 100;
@@ -138,27 +143,51 @@ const paginatedStudents = computed(() => {
 });
 
 const totalPages = computed(() =>
-    Math.ceil(students.length / rowsPerPage.value)
+    Math.ceil(filteredStudents.value.length / rowsPerPage.value)
 );
 
 const toggleSelect = (studentId) => {
-    if (selectedStudents.value.has(studentId)) {
-        selectedStudents.value.delete(studentId);
+    const updated = new Set(selectedStudents.value);
+    if (updated.has(studentId)) {
+        updated.delete(studentId);
     } else {
-        selectedStudents.value.add(studentId);
+        updated.add(studentId);
     }
+    selectedStudents.value = updated;
 };
 
 const selectAllCurrentPage = () => {
-    paginatedStudents.value.forEach((s) =>
-        selectedStudents.value.add(s.student_id)
-    );
+    const updated = new Set(selectedStudents.value);
+    paginatedStudents.value.forEach((s) => updated.add(s.student_id));
+    selectedStudents.value = updated;
 };
 
+const allSelected = computed(() =>
+    paginatedStudents.value.every((s) => selectedStudents.value.has(s.student_id))
+);
+
+
 const deselectAllCurrentPage = () => {
-    paginatedStudents.value.forEach((s) =>
-        selectedStudents.value.delete(s.student_id)
-    );
+    const updated = new Set(selectedStudents.value);
+    paginatedStudents.value.forEach((s) => updated.delete(s.student_id));
+    selectedStudents.value = updated;
+};
+
+const deleteSelected = () => {
+    if (selectedStudents.value.size === 0) {
+        alert("No students selected.");
+        return;
+    }
+
+    const ids = Array.from(selectedStudents.value);
+    if (
+        confirm(
+            `Are you sure you want to remove selected student(s)?\n\n${ids.join(", ")}\n\nClick OK to Confirm Removal Request or Cancel to abort.`
+        )
+    ) {
+        alert("Student removal request received. Please allow up to 1 business day for processing.");
+        selectedStudents.value.clear();
+    }
 };
 
 const attendancePercent = (absences) => {
@@ -170,7 +199,7 @@ const participationPercent = (s) => {
     return ((total / 4) * 100).toFixed(1);
 };
 
-function convertGradeInverted(g) {
+function convertGrade(g) {
     if (g < 0) g = 0;
     if (g > 19) g = 19;
     const converted = 5 - (g / 19) * 4; // maps 19->1 and 0->5
@@ -182,10 +211,16 @@ const addStudent = () => {
     alert("Add student functionality to be implemented");
 };
 
-const deleteSelected = () => {
-    alert(`Delete students: ${Array.from(selectedStudents.value).join(", ")}`);
-    // Here you should call your backend API to delete and refresh
+const editStudent = () => {
+    alert("Editing student data functionality to be implemented");
 };
+
+const deleteStudent = (studentName, studentID) => {
+    if (confirm(`Are you sure you want to remove Student ${studentID} ${studentName}?\n\nClick OK to Confirm Removal Request or Cancel to abort.`)) {
+        alert(`Student removal request received. Please allow up to 1 business day for processing.`);
+    }
+};
+
 </script>
 
 <template>
@@ -339,7 +374,7 @@ const deleteSelected = () => {
                                                     class="border-y border-gray-300 dark:border-gray-600 px-4 py-2 text-center"
                                                 >
                                                     {{
-                                                        convertGradeInverted(
+                                                        convertGrade(
                                                             student.g_avg
                                                         )
                                                     }}
@@ -410,7 +445,7 @@ const deleteSelected = () => {
                                             fill="none"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <g id="Edit / Add_Plus_Circle">
+                                            <g id="Edit">
                                                 <path
                                                     id="Vector"
                                                     d="M8 12H12M12 12H16M12 12V16M12 12V8M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z"
@@ -487,6 +522,8 @@ const deleteSelected = () => {
                                     >
                                         <input
                                             type="checkbox"
+                                            class="form-checkbox text-gray-600 rounded mr-1 w-5 h-5 border-gray-300 focus:ring-gray-400"  
+                                             :checked="allSelected"
                                             @change="
                                                 $event.target.checked
                                                     ? selectAllCurrentPage()
@@ -545,6 +582,8 @@ const deleteSelected = () => {
                                     <td class="p-2 border-b items-center">
                                         <input
                                             type="checkbox"
+                                            class="form-checkbox text-gray-600 rounded w-5 h-5 border-gray-300 focus:ring-gray-400"  
+
                                             :checked="
                                                 selectedStudents.has(
                                                     student.student_id
@@ -563,7 +602,7 @@ const deleteSelected = () => {
                                     </td>
                                     <td class="p-2 border-b text-center">
                                         {{
-                                            convertGradeInverted(student.g_avg)
+                                            convertGrade(student.g_avg)
                                         }}
                                     </td>
                                     <td class="p-2 border-b text-center">
@@ -608,7 +647,7 @@ const deleteSelected = () => {
                                     </td>
                                     <td class="p-2 border-b text-center">
                                         <button
-                                            @click="addStudent"
+                                            @click="editStudent"
                                             class="text-sm h-5 w-15"
                                         >
                                             <svg
@@ -627,10 +666,9 @@ const deleteSelected = () => {
                                             </svg>
                                         </button>
                                         <button
-                                            @click="deleteSelected"
-                                            :disabled="
-                                                selectedStudents.size === 0
-                                            "
+                                            @click="deleteStudent(student.name, student.student_id)"
+                                            
+                                            
                                             class="mx-2 text-sm h-5 w-15"
                                         >
                                             <svg

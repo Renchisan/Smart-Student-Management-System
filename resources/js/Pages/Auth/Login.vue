@@ -107,8 +107,8 @@ const submit = () => {
             <hr>
             <div class="mt-4 mb-4">
                 <h1 class="text-green-900 text-lg"><b>Is this your first time here?</b></h1>
-                <p class="text-sm"> For <b>Students</b>, use Student Portal credentials (Student number and Password).
-                <br>For <b>Faculty</b>, use credentials provided by the IT Department.<br>Design by ITC.</p> 
+                <p class="text-sm"> For <b>Students</b>, use Student Portal credentials (Student email and Password).
+                <br>For <b>Faculty</b>, use credentials provided by the IT Department.<br>Design credits to ITC.</p> 
             </div>
             <!-- <div class="mt-4 flex items-center justify-end">
                 <Link

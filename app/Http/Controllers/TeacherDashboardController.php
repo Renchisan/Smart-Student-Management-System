@@ -57,7 +57,7 @@ class TeacherDashboardController extends Controller
             })
             ->where('users.teacher_id', $teacherId)
             ->select(
-                'users.id as student_id',
+                'users.studentID as student_id',
                 'users.name',
                 'users.program',
                 'academic_data.g_avg',

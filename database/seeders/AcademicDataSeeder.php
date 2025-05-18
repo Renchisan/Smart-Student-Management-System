@@ -13,9 +13,9 @@ class AcademicDataSeeder extends Seeder
         $students = User::where('role', 'student')->get();
 
         foreach ($students as $student) {
-            $G1 = rand(0, 19);
-            $G2 = rand(0, 19);
-            $G3 = rand(0, 19);
+            $G1 = rand(9, 19);
+            $G2 = rand(9, 19);
+            $G3 = rand(9, 19);
             DB::table('academic_data')->insert([
                 'student_id' => $student->id,
                 'studytime' => rand(1, 4),

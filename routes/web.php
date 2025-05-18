@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PredictionController;
 use App\Http\Controllers\TeacherDashboardController;
+use App\Http\Controllers\StudentDashboardController;
+
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -35,18 +37,14 @@ Route::get('/dashboard', function () {
     return abort(403);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Teacher Dashboard
-// Route::get('/teacher/dashboard', function () {
-//     return Inertia::render('TeacherDashboard');
-// })->middleware(['auth', 'verified'])->name('teacher.dashboard');
+
 Route::get('/teacher/dashboard', [TeacherDashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('teacher.dashboard');
 
-// Student Dashboard
-Route::get('/student/dashboard', function () {
-    return Inertia::render('StudentDashboard');
-})->middleware(['auth', 'verified'])->name('student.dashboard');
+Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('student.dashboard');
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

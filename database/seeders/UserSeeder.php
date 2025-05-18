@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         // Create students
         $students = [
             [
-                'name' => 'April Dagdagan',
+                'name' => 'April Iloreta',
                 'email' => 'april@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'student',
@@ -59,7 +59,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'student',
                 'studentID' => '21-' . str_pad($index + 3, 6, '0', STR_PAD_LEFT),
-                'yearLevel' => rand(1, 4),
+                'yearLevel' => '3',
                 'program' => ['CS', 'IT'][rand(0, 1)],
                 'teacher_id' => $teacher->id,
             ];

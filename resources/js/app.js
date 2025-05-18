@@ -9,7 +9,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-    title: (title) => `${title} - CCIS`,
+    title: (title) => `${title} - MMSU Smart Student Management System`,
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,

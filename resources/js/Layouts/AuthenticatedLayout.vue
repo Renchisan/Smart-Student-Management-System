@@ -10,7 +10,6 @@ import { Link, usePage } from '@inertiajs/vue3';
 const showingNavigationDropdown = ref(false);
 const page = usePage();
 const userRole = page.props.auth.user.role; // assuming this is where the role is stored
-console.log('User role:', userRole);
 </script>
 
 <template>
